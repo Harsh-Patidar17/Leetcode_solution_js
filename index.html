@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        const apiUrl = "https://api.groq.com/openai/v1/chat/completions";
+        const apiKey="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"
+        
+        
+        async function postData(){
+            const loader=document.querySelector("#chat-area")
+            loader.innerHTML="Loading brother";
+            const message = document.getElementById('message').value
+            console.log(message);
+
+            if (apiKey === "") {
+                console.log("You forgot to add your own key !");
+            }
+
+            fetch(apiUrl, {
+                method: "POST",
+                // mode: "no-cors",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${apiKey}`
+
+                },
+                body: JSON.stringify(
+                    {
+                        "model": "llama3-70b-8192",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": `Write a c++ code for this question: ${message}`
+                            }
+                        ]
+                    }
+                )
+            }).then(response => response.json())
+            .then(data => {
+                console.log(data);
+                console.log("DONE");
+                const responseText= data.choices[0].message.content.trim();
+                const card =document.createElement('pre')
+                card.innerHTML=responseText;
+                loader.innerHTML="";
+                document.getElementById('chat-area').appendChild(card);
+            })
+        }
+
+    </script>
+    <style>
+        .card{
+            background-color: black;
+            color:white;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid white ;
+            border-radius: 4px;
+        }
+        .insert{
+            margin: 0 auto;
+            margin-top: 30px;
+            height: 200px;
+            width: 80%;
+            display: block;
+        }
+        #chat-area{
+            background-color: aqua;
+        }
+    </style>
+</head>
+
+<body id="harsh">
+    <h1>Get any Leetcode Solutions in javascript </h1>
+    <form>
+        <label for="message">Enter your code statement : </label>
+        <textarea  class="input" id="message" cols="30" rows="10"></textarea>
+        <button type="button" onclick="postData()">Send me</button>
+        <div id="chat-area">test</div>
+    </form>
+    
+
+</body>
+</html>
